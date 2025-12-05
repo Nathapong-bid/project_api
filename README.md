@@ -1,101 +1,107 @@
 # Vocabulary Practice API Workshop
 
-FastAPI + MySQL + Docker – Workshop Template สำหรับสร้าง REST API พร้อม Database และรองรับการเชื่อมต่อกับ Frontend
+FastAPI + MySQL + Docker — Template สำหรับสร้าง REST API + Database สำหรับแอป Vocabulary Practice  
 
-## เกี่ยวกับ Workshop
+## 🎯 Why / What is this
 
-Workshop นี้ออกแบบมาเพื่อสอนนักศึกษา/ผู้เรียนสร้างแอปฝึกภาษาอังกฤษ (Vocabulary Practice) แบบ Full-Stack โดยใช้เทคโนโลยีสมัยใหม่ เหมาะกับ Term Project หรือ Mini Project ด้าน:
+โปรเจกต์นี้ถูกออกแบบมาเพื่อเป็นโครงฐาน (boilerplate) สำหรับ:
 
-- ✅ Vocabulary Learning
-- ✅ Language Practice / Writing Practice
-- ✅ การทดลอง Integrate AI ตรวจประโยค
-
-**เทคโนโลยีหลัก**
-
-- FastAPI – RESTful API + Auto-documentation
-- MySQL – Relational Database
-- Docker Compose – จัดการ Service ทั้ง API + DB
-- SQLAlchemy ORM – เข้าถึงและจัดการข้อมูลด้วย Python
+- สร้าง RESTful API ด้วย FastAPI + SQLAlchemy + MySQL + Docker Compose  
+- เก็บคำศัพท์และประวัติการฝึก (practice history) ในฐานข้อมูล  
+- เชื่อมต่อกับ frontend / mobile / client ได้ง่าย — เหมาะสำหรับโปรเจกต์ฝึกภาษา, vocabulary drill, writing practice  
 
 ---
 
-## โครงสร้างโปรเจกต์ (Project Structure)
+## 📂 Project Structure
 
-โครงสร้างหลักของ repo นี้:
-
-```text
 project_api/
-├─ api/                # โค้ด FastAPI + SQLAlchemy
-├─ init.sql            # สร้าง Database / Tables / Sample Data
-├─ docker-compose.yml  # รัน API + MySQL ด้วย Docker
+├─ api/ # โค้ด FastAPI + SQLAlchemy
+├─ init.sql # สร้าง Database / Tables / Sample Data
+├─ docker-compose.yml # รัน API + MySQL ด้วย Docker
 ├─ .gitignore
-└─ README.md
+└─ README.md # เอกสารโปรเจกต์
 
-Quick Start
-Prerequisites
 
-ก่อนเริ่มใช้งาน ควรติดตั้ง:
+> โฟลเดอร์ `api/` คือส่วน backend หลักที่ใช้พัฒนา API  
 
-Docker Desktop
- (รวม Docker Compose)
+---
 
-Node.js
- เวอร์ชัน 18 ขึ้นไป (ถ้าจะเชื่อมกับ Frontend ภายนอก)
+## 🚀 Quick Start
 
-Git
+### สิ่งที่ต้องเตรียม
 
-Code Editor (แนะนำ VS Code
-)
+- Docker + Docker Compose  
+- Git  
 
-⚡ เริ่มต้นใช้งาน (ประมาณ 5 นาที)
+### เริ่มใช้งาน  
 
-Clone Repository
-
+```bash
 git clone https://github.com/zhiwei-chen-bu/project_api.git
 cd project_api
-
-
-เริ่ม Backend + Database ด้วย Docker
-
 docker-compose up -d
 
 
-Docker จะทำงานดังนี้:
+Docker จะสร้าง container MySQL + API
 
-สร้าง MySQL container
+รัน init.sql เพื่อสร้างตาราง + ข้อมูลเริ่มต้น
 
-รัน init.sql เพื่อสร้างตารางและข้อมูลตัวอย่าง
+เริ่ม server ของ FastAPI
 
-Start FastAPI server (อ่านโค้ดจากโฟลเดอร์ api/)
-
-ตรวจสอบ API ผ่าน Swagger UI
-
-เปิด browser ไปที่:
+หลังจากนั้นเปิด browser ที่:
 
 http://localhost:8000/docs
 
-คุณจะเห็น Swagger UI สำหรับทดสอบ API ได้ทันที
 
-API Endpoints
-Method	Endpoint	Description	Response
-GET	/	API information / endpoints list	JSON (info + endpoints)
-GET	/api/word	สุ่มคำศัพท์ 1 คำ	Word object
-POST	/api/validate-sentence	ตรวจประโยค + ให้คะแนนตามคำศัพท์ที่ใช้	Validation result
-GET	/api/summary	สถิติการฝึกทั้งหมด	Summary statistics
-GET	/api/history	ประวัติการฝึกทั้งหมด	Array of practice sessions
-GET	/health	Health check	Status object
+เพื่อดูและทดสอบ API ผ่าน Swagger UI
 
-รายละเอียดพฤติกรรมจริงของแต่ละ endpoint ดูได้จากโค้ดในโฟลเดอร์ api/ และหน้า /docs
+📡 API Endpoints (ตัวอย่าง)
+Method	Endpoint	Description
+GET	/	ข้อมูล general / list endpoints
+GET	/api/word	ดึงคำศัพท์แบบสุ่ม (random word)
+POST	/api/validate-sentence	ส่งประโยค → ตรวจ + ให้ feedback/score
+GET	/api/summary	สถิติการฝึก (summary)
+GET	/api/history	ประวัติการฝึกทั้งหมด (history)
+GET	/health	Health check / status of API
 
-ตัวอย่างการใช้งาน API
-1. ดึงคำศัพท์แบบสุ่ม
+ดูรายละเอียด request / response ได้จาก Swagger UI (/docs)
 
-Request
+🗄️ Database Schema (โดยสังเขป)
+Table: words
 
+id — INT, primary key
+
+word — คำศัพท์ (unique)
+
+definition — ความหมาย / คำอธิบาย
+
+difficulty_level — ระดับ: Beginner / Intermediate / Advanced
+
+created_at — timestamp
+
+Table: practice_sessions
+
+id — INT, primary key
+
+word_id — foreign key → words.id
+
+user_sentence — ประโยคที่ผู้ใช้ส่ง
+
+score — คะแนน (e.g. 0.0–10.0)
+
+feedback — ข้อเสนอแนะ / comment
+
+corrected_sentence — ถ้าระบบแก้ประโยคให้
+
+practiced_at — timestamp
+
+ความสัมพันธ์: หนึ่งคำศัพท์ (word) — หลายประวัติการฝึก (practice_sessions)
+
+🧪 Usage Examples
+ดึงคำศัพท์ (Random Word)
 curl http://localhost:8000/api/word
 
 
-ตัวอย่าง Response
+ตัวอย่าง response:
 
 {
   "id": 1,
@@ -104,10 +110,7 @@ curl http://localhost:8000/api/word
   "difficulty_level": "Beginner"
 }
 
-2. ส่งประโยคเพื่อตรวจสอบ (Validate Sentence)
-
-Request
-
+ส่งประโยคเพื่อตรวจสอบ (Validate Sentence)
 curl -X POST http://localhost:8000/api/validate-sentence \
   -H "Content-Type: application/json" \
   -d '{
@@ -116,184 +119,66 @@ curl -X POST http://localhost:8000/api/validate-sentence \
   }'
 
 
-ตัวอย่าง Response (Mock AI / ระบบให้คะแนนจำลอง)
+ตัวอย่าง response:
 
 {
   "score": 8.5,
   "level": "Beginner",
-  "suggestion": "Excellent! Your sentence is well-structured and descriptive.",
+  "suggestion": "Excellent! Your sentence is well-structured.",
   "corrected_sentence": "I eat an apple every morning for breakfast"
 }
 
-3. ดูสถิติการฝึก (Summary)
-
-Request
-
-curl http://localhost:8000/api/summary
-
-
-ตัวอย่าง Response
-
-{
-  "total_practices": 15,
-  "average_score": 7.8,
-  "total_words_practiced": 5,
-  "level_distribution": {
-    "Beginner": 8,
-    "Intermediate": 5,
-    "Advanced": 2
-  }
-}
-
-Database Schema
-Table: words
-
-เก็บคำศัพท์ทั้งหมดในระบบ
-
-Column	Type	Constraints	Description
-id	INT	PRIMARY KEY, AUTO_INCREMENT	รหัสคำศัพท์
-word	VARCHAR(100)	UNIQUE, NOT NULL	คำศัพท์ภาษาอังกฤษ
-definition	TEXT		ความหมาย/คำจำกัดความ
-difficulty_level	ENUM('Beginner','Intermediate','Advanced')		ระดับความยากของคำศัพท์
-created_at	TIMESTAMP	DEFAULT CURRENT_TIMESTAMP	วันที่เพิ่มคำศัพท์
-Table: practice_sessions
-
-เก็บประวัติการฝึกของผู้ใช้
-
-Column	Type	Constraints	Description
-id	INT	PRIMARY KEY, AUTO_INCREMENT	รหัสการฝึก
-word_id	INT	FOREIGN KEY → words(id)	คำศัพท์ที่ฝึก
-user_sentence	TEXT	NOT NULL	ประโยคที่ผู้ใช้แต่ง
-score	DECIMAL(3,1)		คะแนน (0.0 – 10.0)
-feedback	TEXT		ข้อเสนอแนะ/คำแนะนำจากระบบ
-corrected_sentence	TEXT		ประโยคที่ระบบแก้ไขแล้ว
-practiced_at	TIMESTAMP	DEFAULT CURRENT_TIMESTAMP	วันเวลาที่ฝึก
-ER Diagram (เชิงแนวคิด)
-
-Development Guide
-จัดการ Docker Containers
+🛠️ Development & Docker Management
 
 ดูสถานะ containers:
 
 docker ps
 
 
-Restart services:
-
-# Restart ทั้งหมด
-docker-compose restart
-
-# Restart เฉพาะ FastAPI
-docker-compose restart vocabapi
-
-# Restart เฉพาะ MySQL
-docker-compose restart mysql
-
-
-ดู logs:
-
-# Logs ทั้งหมด
-docker-compose logs -f
-
-# Logs เฉพาะ service
-docker-compose logs -f vocabapi
-docker-compose logs -f mysql
-
-
-หยุด containers:
+หยุด:
 
 docker-compose down
 
 
-ลบข้อมูลและเริ่มใหม่ (ลบ volumes ด้วย – ข้อมูลใน DB จะหายหมด):
+Restart:
+
+docker-compose restart
+
+
+ลบ volumes + start ใหม่:
 
 docker-compose down -v
 docker-compose up -d
 
-การจัดการ Database ผ่าน MySQL CLI
 
-เข้าใช้งาน MySQL ใน container:
+เข้า MySQL CLI (ถ้าต้องการจัดการ DB / ตรวจสอบข้อมูล):
 
-docker exec -it vocab_mysql mysql -u vocabuser -pvocabpass123 vocabulary_db
+docker exec -it <mysql_container_name> mysql -u <user> -p<password> <database_name>
 
+✅ Contributing & Extensions (แนวทางพัฒนาเพิ่มเติม)
 
-ตัวอย่างคำสั่ง:
+เปลี่ยนจากระบบ mock → ใช้ AI จริง เช่น เชื่อมกับ OpenAI API เพื่อให้คะแนน/feedback/แก้ประโยคจริง
 
--- เพิ่มคำศัพท์ใหม่
-INSERT INTO words (word, definition, difficulty_level) VALUES
-('courage', 'The ability to do something frightening', 'Intermediate'),
-('serendipity', 'Finding something good without looking for it', 'Advanced');
+ระบบ gamification (streak, leaderboard, achievements)
 
--- ดูคำศัพท์ทั้งหมด
-SELECT * FROM words;
+รองรับผู้ใช้หลายคน (multi-user) + authentication / authorization
 
--- ดูประวัติการฝึก 10 รายการล่าสุด
-SELECT * FROM practice_sessions
-ORDER BY practiced_at DESC
-LIMIT 10;
+Frontend / Mobile client (React, Next.js, Flutter, …) เชื่อม API นี้เพื่อทำ UI/UX
 
--- ดูสถิติตามระดับความยาก
-SELECT
-  difficulty_level,
-  COUNT(*) AS total_practices,
-  AVG(score) AS avg_score
-FROM practice_sessions ps
-JOIN words w ON ps.word_id = w.id
-GROUP BY difficulty_level;
+เพิ่มคำศัพท์ / เพิ่มฐานข้อมูลคำศัพท์ (expand word list)
 
+📄 License
 
-Export ข้อมูล:
+ระบุ license ของโปรเจกต์ (เช่น MIT / Apache / GPL) — ถ้ามี
 
-docker exec vocab_mysql mysqldump -u vocabuser -pvocabpass123 vocabulary_db > backup.sql
+📬 Contact / Feedback
 
+ถ้าพบ bug, มีข้อเสนอแนะ, อยากพัฒนาเพิ่มเติม ฯลฯ — ยินดีต้อนรับ pull request / issues / discussions
 
-Import ข้อมูล:
-
-docker exec -i vocab_mysql mysql -u vocabuser -pvocabpass123 vocabulary_db < backup.sql
-
-แนวทางพัฒนาต่อ (ไอเดียสำหรับ Term Project)
-1. เชื่อมต่อ AI จริง (เช่น n8n + OpenAI)
-
-ตอนนี้ระบบอาจใช้ฟังก์ชัน mock (ให้คะแนน/feedback แบบสุ่มหรือ rule-based)
-สามารถเปลี่ยนเป็นเรียก AI จริงได้ เช่น:
-
-สร้าง n8n workflow ที่เรียก OpenAI API
-
-ปรับโค้ดใน API ให้ POST ไปที่ webhook ของ n8n
-
-รับ JSON response กลับมาแล้ว map ใส่ score, feedback, corrected_sentence
-
-2. Gamification
-
-ระบบ Streak (ฝึกต่อเนื่องรายวัน)
-
-ระบบ Achievements (เช่น “ฝึกครบ 50 คำ” , “ได้คะแนนเต็ม 10/10”)
-
-Leaderboard ตามคะแนนเฉลี่ยหรือจำนวนครั้งที่ฝึก
-
-3. Advanced Features
-
-รูปภาพประกอบคำศัพท์ (เชื่อม Unsplash API)
-
-Export progress ของผู้ใช้เป็น PDF report
-
-Multi-user support (แยกข้อมูลตาม user_id)
-
-Learning Resources
-Official Documentation
-
-FastAPI – https://fastapi.tiangolo.com
-
-SQLAlchemy 2.0 – https://docs.sqlalchemy.org
-
-Docker Compose – https://docs.docker.com/compose/
-
-(ตัวอย่าง Frontend) Next.js App Router – https://nextjs.org
-
-Made with ❤️ and ☕️ for learners
+Enjoy building — Happy coding!
 
 
 ---
 
-ถ้าอยากให้ผม “ปรับสไตล์ให้เป็นภาษาอังกฤษล้วน” หรือ “โฟกัสสำหรับอาจารย์/ผู้ตรวจงาน” บอกได้เลย เดี๋ยวผมทำ README อีกเวอร์ชันให้ 👍
-::contentReference[oaicite:0]{index=0}
+ถ้าคุณอยาก — ผมช่วย **merge** README เวอร์ชันไทย + อังกฤษ (bilingual) ให้เลย เผื่อโปรเจกต์คุณอาจมีคนทั้งไทยและต่างประเทศใช้ — ถ้ามีไฟล์ `.env.example` หรือ config ใด ๆ ให้ผมรู้ด้วย เดี๋ยวเผื่อใส่ลงไปให้ครบ 👍
+::contentReference[oaicite:5]{index=5}
