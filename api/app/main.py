@@ -1,22 +1,31 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from .routers import words, validate
 
-app = FastAPI()
+# Import router
+from routers.validate import router as validate_router
 
-# Enable CORS for frontend
+app = FastAPI(title="Word Validation API")
+
+# CORS สำหรับทุกที่
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://127.0.0.1:3000"],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-app.include_router(words.router, prefix="/api")
-app.include_router(validate.router, prefix="/api")
+# รวม router
+app.include_router(validate_router, prefix="/api")
 
+
+
+# Optional: endpoint รับ webhook จาก n8n (ถ้าต้องการ)
+@app.post("/api/webhook/worddee_event")
+async def receive_webhook(data: dict):
+    print("🔥 Received from n8n:", data)
+    return {"status": "ok", "received": data}
 
 @app.get("/")
 def root():
-    return {"message": "Worddee API running"}
+    return {"message": "API is running"}

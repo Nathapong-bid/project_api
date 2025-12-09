@@ -1,19 +1,35 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 import httpx
 
 router = APIRouter()
 
+# โมเดลข้อมูลที่รับจาก client
 class SentenceRequest(BaseModel):
     sentence: str
     word: str
 
+# URL ของ n8n webhook
+N8N_WEBHOOK_URL = "http://localhost:5678/webhook-test/worddee_event"
+
 @router.post("/validate-sentence")
 async def validate_sentence(data: SentenceRequest):
-    # ส่งเข้า n8n ที่ set ไว้
-    N8N_URL = "https://your-n8n-webhook-url"
-
     async with httpx.AsyncClient() as client:
-        response = await client.post(N8N_URL, json=data.dict())
+        try:
+            response = await client.post(
+                N8N_WEBHOOK_URL,
+                json=data.dict(),
+                headers={"Content-Type": "application/json"},
+                timeout=10
+            )
+            response.raise_for_status()
+        except httpx.HTTPStatusError as e:
+            raise HTTPException(status_code=e.response.status_code, detail=e.response.text)
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=str(e))
 
-    return response.json()
+    return {
+        "status": "success",
+        "n8n_response": response.json(),
+        "your_data": data.dict()
+    }
