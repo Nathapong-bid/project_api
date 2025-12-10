@@ -21,7 +21,7 @@ app.include_router(validate_router, prefix="/api")
 
 
 # Optional: endpoint รับ webhook จาก n8n (ถ้าต้องการ)
-@app.post("/api/webhook/worddee_event")
+@app.post("/api/webhook/worddee")
 async def receive_webhook(data: dict):
     print("🔥 Received from n8n:", data)
     return {"status": "ok", "received": data}

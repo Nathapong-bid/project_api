@@ -10,7 +10,7 @@ class SentenceRequest(BaseModel):
     word: str
 
 # URL ของ n8n webhook
-N8N_WEBHOOK_URL = "http://localhost:5678/webhook-test/worddee_event"
+N8N_WEBHOOK_URL = "https://nathapongguitar.app.n8n.cloud/webhook-test/worddee"
 
 @router.post("/validate-sentence")
 async def validate_sentence(data: SentenceRequest):

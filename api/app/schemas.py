@@ -67,8 +67,6 @@ from pydantic import BaseModel
 class WordResponse(BaseModel):
     word: str
 
-from pydantic import BaseModel
-
 class ValidateRequest(BaseModel):
     word: str
     sentence: str
@@ -78,8 +76,6 @@ class ValidateResponse(BaseModel):
     level: str
     suggestion: str
     corrected_sentence: str
-
-from pydantic import BaseModel
 
 class SummaryResponse(BaseModel):
     total_attempts: int
